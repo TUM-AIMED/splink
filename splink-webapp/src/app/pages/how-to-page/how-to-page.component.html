@@ -1,0 +1,244 @@
+<section class="hero is-primary is-small">
+  <div class="hero-body">
+    <div class="container is-fluid">
+      <section class="section">
+        <h1 class="title">
+          <i class="fa fa-info"></i> How to
+        </h1>
+      </section>
+    </div>
+  </div>
+</section>
+
+<div class="container is-fluid">
+  <section class="section">
+    <div class="card">
+      <div class="card-content">
+        <div class="content">
+          <h2>sPLINK- File Format</h2>
+          <p>
+            Input file formats supported by <b>sPLINK</b> is completely consistent with
+            <a href="https://www.cog-genomics.org/plink/1.9/formats">PLINK </a>. <b>sPLINK</b> supports the
+            following input files:
+          </p>
+          <ul>
+            <li>.bed: The binary file containing values of SNPs for each patient.</li>
+            <li>.bim: The file including the metadata of SNPs (e.g. SNP name, chormosome number, and base pair distance)</li>
+            <li>.fam: The file containing phenotype values (e.g. Case or Control or quantitative values)</li>
+            <li>.pheno: The file including phenotype values that can override those in .fam file</li>
+            <li>.cov: The file containing the covariate (e.g. sex and age) values</li>
+          </ul>
+
+          <b>Important Note:</b> Control/Case values must be coded as 1/2 in .fam or .pheno files for <b>sPLINK</b>
+          <h2>sPLINK - User Guide</h2>
+
+          <p>
+            A user in <b>sPLINK</b> can be a coordinator or participant or both.
+            The coordinator uses the web interface to create the project and tokens.
+            The participants employ the web interface only to sign up their user account. They use client package to join the project,
+            perform the local computations on their local data, and download the results. In the following, we provide
+            you with a step-by-step guid on how to use <b>sPLINK</b>.
+          </p>
+
+          <h3>Step - 1: Create User Account & Login</h3>
+          <p>
+            The first step to use <b>sPLINK</b> is to create a user account
+            that will be associated with all projects a user either creates as coordinator or joins as participant. In this tutorial, we assume
+            there are two participants and a coordinator. The username and password of the coordinator and participants
+            are as follows:
+          </p>
+          <ul>
+            <li>The coordinator
+              <ul>
+                <li>username: splinker1 </li>
+                <li>password: splinker#1 </li>
+              </ul>
+            </li>
+
+            <li>First participant
+              <ul>
+                <li>username: splinker2 </li>
+                <li>password: splinker#2 </li>
+              </ul>
+            </li>
+
+            <li>Second participant
+              <ul>
+                <li>username: splinker3 </li>
+                <li>password: splinker#3  </li>
+              </ul>
+            </li>
+          </ul>
+          <p>
+            To create three aforementioned user accounts, go to
+            <a href="https://www.exbio.wzw.tum.de/splink/account">sign up page</a> and enter the username and password
+            of each user twice to sign up.
+          </p>
+
+          <p><b>Important Note:</b> Usernames must be unique. It means that you need to use usernames other than what we used
+          in this tutorial or skip this step and use already created user accounts in the next steps.</p>
+
+          <figure>
+            <img src="assets/how_to_page/imgs/sign_up.png" alt="Sign up" height="200" width="300"/>
+            <figcaption>Sign up</figcaption>
+          </figure>
+
+          <h3>Step - 2: Download</h3>
+
+            The second step is to download the appropriate client package based on the operating system of your machine using the following links:
+          <ul>
+              <li><a href="assets/how_to_page/executables/splink_client_win64.exe" download>Microsoft Windows Client</a></li>
+              <li><a href="assets/how_to_page/executables/splink_client_linux.tar" download>Ubuntu/Linux Client</a></li>
+              <li><a href="assets/how_to_page/executables/splink_client_mac.tar" download>Mac OS X Client</a></li>
+
+          </ul>
+          <p>
+          Afterwards, download our <a href="assets/how_to_page/datasets/toy_dataset.zip" download>toy dataset</a> for testing purposes.
+          This dataset contains two datasets: the first dataset (25 samples and 100 SNPs) is used by the first
+            participant and the second one (35 samples and 100 SNPs) is for the second participant. Each dataset includes four files:
+          </p>
+          <ul>
+            <li>.bed: the SNP values</li>
+            <li>.bim:  chromosome number, SNP name, and base pair distance of the SNPs</li>
+            <li>.fam: phenotype values (Control/Case coded as 1/2)</li>
+            <li>.cov: Covariate (i.e. "Sex" and "Age") values</li>
+          </ul>
+          <p>
+            <b>Note:</b> sPLINK client packages have been tested on Windows 10, Ubuntu 18.04/20.04, and Mac OS X 10. <br />
+            <b>Note:</b> In Windows 10, firewall application might ask you whether you allow sPLINK client to send data. If so,
+            click on 'Allow'.
+          </p>
+          <h3>Step - 3: Project creation</h3>
+          <p>
+            Only coordinator can create a new project. To this end, the coordinator first logs in using his/her username and password.
+            After login, under the "Projects" tab, the coordinator can see the previous projects or
+            create a new project. In order to create a new project, the coordinator needs to specify the following project
+            parameters:
+          </p>
+
+          <ul>
+            <li>Association Test: chi-square or linear regression or logistic regression.</li>
+            <li>Project name: an arbitrary name for the project. </li>
+            <li>Project description: an arbitrary description for the project. </li>
+            <li>Chunk size: number of SNPs that processed concurrently. Chunk size should be selected based on the dataset size (i.e. number of SNPs in the dataset)
+            and computational power of the participants' machine.</li>
+            <li> Covariates: a comma separated list of names that should be considered as covariates (confounding factors)
+              in the study (only applicable to logistic/linear regression tests). The names entered in the confounding
+              factor field need to correspond to (a) column name(s) in the .cov
+            file of every client.
+            </li>
+            <li>Max iterations: number of algorithm iterations (only applicable to logistic regression test) </li>
+
+          </ul>
+
+          <p>
+            In this tutorial, the coordinator creates a logistic regression project with name <i>my_project</i> and chunk size 1000.
+            The coordinator sets the number of iterations to 20 similar to <b><i>PLINK</i></b> and consider <i>Sex</i> and <i>Age</i> as covariates.
+            By pressing "Create" button, the project is created and the coordinator is directed to the project page.
+            There, he/she can see the project's information in the "Info" section and manage the tokens in the "Contributors" section.
+          </p>
+
+          <figure>
+          <img src="assets/how_to_page/imgs/create_project.png" alt="create project" height="450" width="600"/>
+            <figcaption>Project creation</figcaption>
+          </figure>
+
+          <figure>
+          <img src="assets/how_to_page/imgs/project_summary.png" alt="project page" height="450" width="600"/>
+            <figcaption>Project Info</figcaption>
+          </figure>
+
+
+          <h3>Step - 4: Project tokens</h3>
+          <p>
+            Tokens are an essential part when it comes to accessing projects. For every participant, the coordinator
+            creates a token granting a participant access to the project and shares each generated token with a
+            participant.
+            In the "Participants" section, the coordinator gets an overview about tokens that have been created and/or are already
+            used by a contributor.
+            Additionally, the coordinator can delete tokens, thereby withdrawing the access to the project for the corresponding
+            client. When the coordinator created a token for every
+            participant, she/he can share the project ID (generated automatically) and a token with each of them via email, inviting them to join the project.
+          </p>
+
+          <figure>
+          <img src="assets/how_to_page/imgs/created_tokens.png" alt="created tokens" height="500" width="1200"/>
+            <figcaption>Project Tokens</figcaption>
+          </figure>
+
+
+          <h3>Step - 5: Project joining and participation</h3>
+          <p>
+            After receiving a token from the coordinator, each participant follows four steps in order to successfully
+            join the project and participate in the computation:
+          </p>
+          <ol>
+            <li> Run the executable client package downloaded at step 2.</li>
+            <li> Enter his/her user account information (created at step 1) as well as the project ID and token (got at step 4) into the corresponding text
+              fields and press "Join".
+            </li>
+            <li>If join is successful, the participant can see the project info and click on 'Accept' to proceed.</li>
+            <li> If the participant decided to move forward, she/he chooses the path to the .bed file, .cov file (if applicable), .pheno file path (optional) and
+              phenotype column name (optional), and sets the number of CPU cores allocated to the client package. Then, press "Run".
+            </li>
+          </ol>
+
+          <figure>
+          <img src="assets/how_to_page/imgs/project_join.png" alt="Project join" height="450" width="600"/>
+            <figcaption>Project Join</figcaption>
+          </figure>
+
+          <figure>
+          <img src="assets/how_to_page/imgs/project_info.png" alt="Project info" height="600" width="800"/>
+            <figcaption>Project Info</figcaption>
+          </figure>
+
+          <figure>
+            <img src="assets/how_to_page/imgs/dataset_select.png" alt="Dataset selection" height="600" width="800"/>
+            <figcaption>Dataset Selection</figcaption>
+          </figure>
+
+          <figure>
+            <img src="assets/how_to_page/imgs/running_window.png" alt="Running window" height="600" width="800"/>
+            <figcaption>Running Window</figcaption>
+          </figure>
+
+          <figure>
+            <img src="assets/how_to_page/imgs/project_done.png" alt="Project done" height="600" width="800"/>
+            <figcaption>Project Done</figcaption>
+          </figure>
+
+          <figure>
+            <img src="assets/how_to_page/imgs/client_log.png" alt="Client log" height="600" width="800"/>
+            <figcaption>Client Log</figcaption>
+          </figure>
+
+          <h3>Step - 6: View Results</h3>
+          After the project is completed, the coordinator can download the result file from the web interface.
+          For the participants, the result file is automatically downloaded as a zip file with 'result-project_id.zip'
+          in the same directory as the client package.
+
+          <figure>
+          <img src="assets/how_to_page/imgs/web_result_download.png" alt="coordinator download" height="400" width="1200"/>
+            <figcaption>Results in Web GUI</figcaption>
+          </figure>
+
+          <figure>
+          <img src="assets/how_to_page/imgs/client_result.png" alt="Result in clients" height="800" width="1200"/>
+            <figcaption>Result file in the clients</figcaption>
+          </figure>
+
+          The coordinator and participants can also view the monitoring statistics such as the runtime of the project as well as
+          the network traffic exchanged over the network through the Web GUI.
+
+          <figure>
+          <img src="assets/how_to_page/imgs/monitoring_stats.png" alt="Monitoring stats" height="100" width="1400"/>
+            <figcaption>Monitoring statistics of the project</figcaption>
+          </figure>
+
+
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
