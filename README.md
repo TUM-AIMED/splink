@@ -12,7 +12,7 @@ To see how to run **sPLINK**, please see [sPLINK online](https://exbio.wzw.tum.d
 The **sPLINK** source code is licensed under the Apache License Version 2.0. (C) 2021, the **sPLINK** developers.
 
 ## Citation
-If you use **sPLINK** in your study, please cite it as follows: <br />
+If you use **sPLINK** in your study, please cite **sPLINK** and **HyFed** as follows: <br />
    ```
 @article{splink2020,
     title={sPLINK: A Federated, Privacy-Preserving Tool as a Robust Alternative to Meta-Analysis in Genome-Wide Association Studies},
@@ -22,6 +22,15 @@ If you use **sPLINK** in your study, please cite it as follows: <br />
     doi = {10.1101/2020.06.05.136382},
     publisher = {Cold Spring Harbor Laboratory},
     journal = {bioRxiv}
+}
+
+@misc{nasirigerdeh2021hyfed,
+       title={HyFed: A Hybrid Federated Framework for Privacy-preserving Machine Learning},
+       author={Reza Nasirigerdeh and Reihaneh Torkzadehmahani and Julian Matschinske and Jan Baumbach and Daniel Rueckert and Georgios Kaissis},
+       year={2021},
+       eprint={2105.10545},
+       archivePrefix={arXiv},
+       primaryClass={cs.LG}
 }
    ```
 ## Contact
