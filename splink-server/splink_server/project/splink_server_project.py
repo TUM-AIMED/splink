@@ -20,6 +20,7 @@ from hyfed_server.project.hyfed_server_project import HyFedServerProject
 from hyfed_server.util.hyfed_steps import HyFedProjectStep
 from hyfed_server.util.status import ProjectStatus
 from hyfed_server.util.utils import client_parameters_to_list
+from hyfed_server.util.data_type import DataType
 
 from splink_server.util.splink_steps import SplinkProjectStep
 from splink_server.util.splink_parameters import SplinkGlobalParameter, SplinkLocalParameter, SplinkProjectParameter
@@ -218,8 +219,8 @@ class SplinkServerProject(HyFedServerProject):
 
         try:
             # compute global sample count
-            sample_counts = client_parameters_to_list(self.local_parameters, SplinkLocalParameter.SAMPLE_COUNT)
-            self.sample_count = np.sum(sample_counts)
+            self.sample_count = self.compute_aggregated_parameter(SplinkLocalParameter.SAMPLE_COUNT,
+                                                                  DataType.NON_NEGATIVE_INTEGER)
 
             # start chunking process
             self.setup_next_chunk()
@@ -233,13 +234,12 @@ class SplinkServerProject(HyFedServerProject):
 
         try:
             # compute global non-missing sample counts for the SNPs
-            clients_non_missing_sample_counts = client_parameters_to_list(self.local_parameters,
-                                                                          SplinkLocalParameter.NON_MISSING_SAMPLE_COUNT)
-            non_missing_sample_counts = np.sum(clients_non_missing_sample_counts, axis=0)
+            non_missing_sample_counts = self.compute_aggregated_parameter(SplinkLocalParameter.NON_MISSING_SAMPLE_COUNT,
+                                                                          DataType.NUMPY_ARRAY_NON_NEGATIVE_INTEGER)
 
             # compute global allele counts
-            clients_allele_counts = client_parameters_to_list(self.local_parameters, SplinkLocalParameter.ALLELE_COUNT)
-            allele_counts = np.sum(clients_allele_counts, axis=0)
+            allele_counts = self.compute_aggregated_parameter(SplinkLocalParameter.ALLELE_COUNT,
+                                                              DataType.LIST_NUMPY_ARRAY_NON_NEGATIVE_INTEGER)
 
             # determine global minor/major allele for each SNP
             minor_allele_names = np.argmin(allele_counts, axis=1)
@@ -331,8 +331,8 @@ class SplinkServerProject(HyFedServerProject):
         """ Compute global chi-square, odd ratio, and p-values using the aggregated contingency tables """
 
         try:
-            clients_contingency_tables = client_parameters_to_list(self.local_parameters, SplinkLocalParameter.CONTINGENCY_TABLE)
-            contingency_tables = np.sum(clients_contingency_tables, axis=0)
+            contingency_tables = self.compute_aggregated_parameter(SplinkLocalParameter.CONTINGENCY_TABLE,
+                                                                   DataType.LIST_NUMPY_ARRAY_NON_NEGATIVE_INTEGER)
 
             # convert global contingency table from list to dictionary
             snp_counter = -1
@@ -374,10 +374,10 @@ class SplinkServerProject(HyFedServerProject):
 
         try:
             # aggregate X'X matrices and X'Y vectors from the clients
-            clients_xt_x_matrices = client_parameters_to_list(self.local_parameters, SplinkLocalParameter.XT_X_MATRIX)
-            clients_xt_y_vectors = client_parameters_to_list(self.local_parameters, SplinkLocalParameter.XT_Y_VECTOR)
-            xt_x_matrices = np.sum(clients_xt_x_matrices, axis=0)
-            xt_y_vectors = np.sum(clients_xt_y_vectors, axis=0)
+            xt_x_matrices = self.compute_aggregated_parameter(SplinkLocalParameter.XT_X_MATRIX,
+                                                              DataType.LIST_NUMPY_ARRAY_FLOAT)
+            xt_y_vectors = self.compute_aggregated_parameter(SplinkLocalParameter.XT_Y_VECTOR,
+                                                             DataType.LIST_NUMPY_ARRAY_FLOAT)
 
             # convert lists to dictionaries
             self.xt_x_matrices = dict()
@@ -491,8 +491,7 @@ class SplinkServerProject(HyFedServerProject):
 
         try:
             # aggregate SSE values from the clients
-            clients_sse_values = client_parameters_to_list(self.local_parameters, SplinkLocalParameter.SSE)
-            sse_values = np.sum(clients_sse_values, axis=0)
+            sse_values = self.compute_aggregated_parameter(SplinkLocalParameter.SSE, DataType.NUMPY_ARRAY_FLOAT)
 
             # convert sse list to dictionary
             self.sse_values = dict()
@@ -592,13 +591,9 @@ class SplinkServerProject(HyFedServerProject):
 
         try:
             # aggregate gradient, Hessian, and log likelihood values from the clients
-            clients_gradient_vectors = client_parameters_to_list(self.local_parameters, SplinkLocalParameter.GRADIENT)
-            clients_hessian_matrices = client_parameters_to_list(self.local_parameters, SplinkLocalParameter.HESSIAN)
-            clients_log_likelihood_values = client_parameters_to_list(self.local_parameters, SplinkLocalParameter.LOG_LIKELIHOOD)
-
-            gradient_vectors = np.sum(clients_gradient_vectors, axis=0)
-            hessian_matrices = np.sum(clients_hessian_matrices, axis=0)
-            log_likelihood_values = np.sum(clients_log_likelihood_values, axis=0)
+            gradient_vectors = self.compute_aggregated_parameter(SplinkLocalParameter.GRADIENT, DataType.LIST_NUMPY_ARRAY_FLOAT)
+            hessian_matrices = self.compute_aggregated_parameter( SplinkLocalParameter.HESSIAN, DataType.LIST_NUMPY_ARRAY_FLOAT)
+            log_likelihood_values = self.compute_aggregated_parameter(SplinkLocalParameter.LOG_LIKELIHOOD, DataType.NUMPY_ARRAY_FLOAT)
 
             # convert lists to dictionaries
             self.gradient_vectors = dict()
@@ -723,8 +718,7 @@ class SplinkServerProject(HyFedServerProject):
 
         try:
             # aggregate Hessian matrices from the clients
-            clients_hessian_matrices = client_parameters_to_list(self.local_parameters, SplinkLocalParameter.HESSIAN)
-            hessian_matrices = np.sum(clients_hessian_matrices, axis=0)
+            hessian_matrices = self.compute_aggregated_parameter(SplinkLocalParameter.HESSIAN, DataType.LIST_NUMPY_ARRAY_FLOAT)
 
             # convert list to dictionary
             self.hessian_matrices = dict()

@@ -20,6 +20,7 @@
 from hyfed_client.project.hyfed_client_project import HyFedClientProject
 from hyfed_client.util.hyfed_steps import HyFedProjectStep
 from hyfed_client.util.operation import ClientOperation
+from hyfed_client.util.data_type import DataType
 
 from splink_client.util.splink_steps import SplinkProjectStep
 from splink_client.util.splink_algorithms import SplinkAlgorithm
@@ -43,7 +44,7 @@ class SplinkClientProject(HyFedClientProject):
 
         super().__init__(username=username, token=token, project_id=project_id, server_url=server_url, compensator_url=compensator_url,
                          algorithm=algorithm, name=name, description=description, coordinator=coordinator,
-                         result_dir=result_dir, log_dir=log_dir)
+                         result_dir=result_dir, log_dir=log_dir, tool='sPLINK')
 
         # Splink project (hyper-)parameters
         self.chunk_size = chunk_size * 1000
@@ -261,7 +262,7 @@ class SplinkClientProject(HyFedClientProject):
 
         try:
             self.local_parameters[SplinkLocalParameter.SAMPLE_COUNT] = self.sample_count
-            self.set_compensator_flag()
+            self.set_compensator_flag({SplinkLocalParameter.SAMPLE_COUNT: DataType.NON_NEGATIVE_INTEGER})
         except Exception as sample_count_exception:
             self.log(sample_count_exception)
             self.set_operation_status_failed()
@@ -333,7 +334,8 @@ class SplinkClientProject(HyFedClientProject):
             # share the noisy counts with the server and noise with compensator
             self.local_parameters[SplinkLocalParameter.NON_MISSING_SAMPLE_COUNT] = non_missing_sample_counts
             self.local_parameters[SplinkLocalParameter.ALLELE_COUNT] = allele_counts
-            self.set_compensator_flag()
+            self.set_compensator_flag({SplinkLocalParameter.NON_MISSING_SAMPLE_COUNT: DataType.NUMPY_ARRAY_NON_NEGATIVE_INTEGER,
+                                       SplinkLocalParameter.ALLELE_COUNT: DataType.LIST_NUMPY_ARRAY_NON_NEGATIVE_INTEGER})
 
         except Exception as non_missing_count_exception:
             self.log(non_missing_count_exception)
@@ -464,7 +466,7 @@ class SplinkClientProject(HyFedClientProject):
 
             # share the noisy contingency tables with the server and noise with compensator
             self.local_parameters[SplinkLocalParameter.CONTINGENCY_TABLE] = contingency_tables
-            self.set_compensator_flag()
+            self.set_compensator_flag({SplinkLocalParameter.CONTINGENCY_TABLE: DataType.LIST_NUMPY_ARRAY_NON_NEGATIVE_INTEGER})
 
         except Exception as contingency_table_exception:
             self.log(contingency_table_exception)
@@ -569,7 +571,8 @@ class SplinkClientProject(HyFedClientProject):
             # share noisy local X'X matrix and X'Y vector with the server and noise with compensator
             self.local_parameters[SplinkLocalParameter.XT_X_MATRIX] = xt_x_matrix
             self.local_parameters[SplinkLocalParameter.XT_Y_VECTOR] = xt_y_vector
-            self.set_compensator_flag()
+            self.set_compensator_flag({SplinkLocalParameter.XT_X_MATRIX: DataType.LIST_NUMPY_ARRAY_FLOAT,
+                                       SplinkLocalParameter.XT_Y_VECTOR: DataType.LIST_NUMPY_ARRAY_FLOAT})
 
         except Exception as beta_linear_exception:
             self.log(beta_linear_exception)
@@ -650,7 +653,7 @@ class SplinkClientProject(HyFedClientProject):
 
             # share noisy local sse values with the server and noise with compensator
             self.local_parameters[SplinkLocalParameter.SSE] = sse_values
-            self.set_compensator_flag()
+            self.set_compensator_flag({SplinkLocalParameter.SSE: DataType.NUMPY_ARRAY_FLOAT})
 
         except Exception as std_error_linear_exception:
             self.log(std_error_linear_exception)
@@ -752,7 +755,9 @@ class SplinkClientProject(HyFedClientProject):
             self.local_parameters[SplinkLocalParameter.GRADIENT] = gradient_vectors
             self.local_parameters[SplinkLocalParameter.HESSIAN] = hessian_matrices
             self.local_parameters[SplinkLocalParameter.LOG_LIKELIHOOD] = log_likelihood_values
-            self.set_compensator_flag()
+            self.set_compensator_flag({SplinkLocalParameter.GRADIENT: DataType.LIST_NUMPY_ARRAY_FLOAT,
+                                       SplinkLocalParameter.HESSIAN: DataType.LIST_NUMPY_ARRAY_FLOAT,
+                                       SplinkLocalParameter.LOG_LIKELIHOOD: DataType.NUMPY_ARRAY_FLOAT})
 
         except Exception as beta_logistic_exception:
             self.log(beta_logistic_exception)
@@ -845,7 +850,7 @@ class SplinkClientProject(HyFedClientProject):
 
             # share noisy local Hessian matrices with the server and noise with compensator
             self.local_parameters[SplinkLocalParameter.HESSIAN] = hessian_matrices
-            self.set_compensator_flag()
+            self.set_compensator_flag({SplinkLocalParameter.HESSIAN: DataType.LIST_NUMPY_ARRAY_FLOAT})
 
         except Exception as std_error_logistic_exception:
             self.log(std_error_logistic_exception)

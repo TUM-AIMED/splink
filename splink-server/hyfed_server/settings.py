@@ -45,9 +45,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'hyfed_server',  # HyFed server app
 
-    'my_tool_server',  # MyTool server app
+    'splink_server',  # sPLINK server app
 
-    'stats_server',  # Stats server app
 ]
 
 MIDDLEWARE = [

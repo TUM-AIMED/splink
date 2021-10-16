@@ -148,6 +148,7 @@ hyfed-compensator/venv
 
 splink-server/hyfed_server/migrations/
 splink-server/splink_server/migrations/
+splink-server/splink_server/result/
 splink-server/.idea
 splink-server/venv
 
