@@ -85,7 +85,7 @@ def add_option_menu(widget, label_text, choices, label_font=('times', 11), padx=
     label.grid(row=widget.row_number, column=0, padx=padx, pady=pady)
 
     option_value = tk.StringVar(widget)
-    option_value.set(choices[1])
+    option_value.set(choices[0])
 
     option_menu = tk.OptionMenu(widget, option_value, *choices)
     option_menu.config(font=label_font)

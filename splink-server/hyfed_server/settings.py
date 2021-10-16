@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 't6ytq#8b@5ktmw0h@b+j^6sm*m*9ngt%y2=r9r)t_3w!d5c%^!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
@@ -45,7 +45,9 @@ INSTALLED_APPS = [
     'corsheaders',
     'hyfed_server',  # HyFed server app
 
-    'splink_server',  # sPLINK server app
+    'my_tool_server',  # MyTool server app
+
+    'stats_server',  # Stats server app
 ]
 
 MIDDLEWARE = [

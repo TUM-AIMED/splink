@@ -21,15 +21,26 @@ from hyfed_server.project.hyfed_server_project import HyFedServerProject
 from hyfed_server.model.hyfed_models import HyFedProjectModel
 from hyfed_server.serializer.hyfed_serializers import HyFedProjectSerializer
 
-# sPLINK project
-from splink_server.project.splink_server_project import SplinkServerProject
-from splink_server.model.splink_model import SplinkProjectModel
-from splink_server.serializer.splink_serializers import SplinkProjectSerializer
+# MyTool project
+from my_tool_server.project.my_tool_server_project import MyToolServerProject
+from my_tool_server.model.my_tool_model import MyToolProjectModel
+from my_tool_server.serializer.my_tool_serializers import MyToolProjectSerializer
+
+# Stats project
+from stats_server.project.stats_server_project import StatsServerProject
+from stats_server.model.stats_model import StatsProjectModel
+from stats_server.serializer.stats_serializers import StatsProjectSerializer
 
 # server_project, project_model, and project_serializer are mappers used in webapp_view
 server_project = dict()
 project_model = dict()
 project_serializer = dict()
+
+# Stats tool mapper classes
+stats_tool_name = 'Stats'
+server_project[stats_tool_name] = StatsServerProject
+project_model[stats_tool_name] = StatsProjectModel
+project_serializer[stats_tool_name] = StatsProjectSerializer
 
 # HyFed project mapper values
 hyfed_tool = 'HyFed'
@@ -37,14 +48,10 @@ server_project[hyfed_tool] = HyFedServerProject
 project_model[hyfed_tool] = HyFedProjectModel
 project_serializer[hyfed_tool] = HyFedProjectSerializer
 
-# Stats tool mapper classes
-stats_tool_name = 'sPLINK'
-server_project[stats_tool_name] = SplinkServerProject
-project_model[stats_tool_name] = SplinkProjectModel
-project_serializer[stats_tool_name] = SplinkProjectSerializer
-
-
-
-
+# MyTool project mapper values
+my_tool_name = 'MyTool'
+server_project[my_tool_name] = MyToolServerProject
+project_model[my_tool_name] = MyToolProjectModel
+project_serializer[my_tool_name] = MyToolProjectSerializer
 
 

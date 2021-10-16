@@ -133,14 +133,17 @@ class HyFedProjectInfoWidget(tk.Tk):
         add_label_and_textbox(self, label_text="Token",
                               value=self.token, status='disabled')
 
+        add_label_and_textbox(self, label_text="Tool",
+                              value=self.project_parameters[HyFedProjectParameter.TOOL], status='disabled')
+
+        add_label_and_textbox(self, label_text="Algorithm",
+                              value=self.project_parameters[HyFedProjectParameter.ALGORITHM], status='disabled')
+
         add_label_and_textbox(self, label_text="Project Name",
                               value=self.project_parameters[HyFedProjectParameter.NAME], status='disabled')
 
         add_label_and_textbox(self, label_text="Project Description",
                               value=self.project_parameters[HyFedProjectParameter.DESCRIPTION], status='disabled')
-
-        add_label_and_textbox(self, label_text="Algorithm",
-                              value=self.project_parameters[HyFedProjectParameter.ALGORITHM], status='disabled')
 
     def ask_quit(self):
         """ Ask exit confirmation from the participant """

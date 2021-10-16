@@ -641,20 +641,6 @@ class ProjectViewSet(viewsets.ModelViewSet):
             logger.debug(io_exception)
             return HttpResponseBadRequest()
 
-    @action(detail=True)
-    def manhattan_plot(self, request, *args, **kwargs):
-        try:
-            project_instance = self.get_object()
-            project_id = project_instance.id
-            manhattan_file_path = f'{project_instance.result_dir}/{project_id}/manhattan-plot.png'
-
-            http_response = HttpResponse(FileWrapper(open(manhattan_file_path, 'rb')), content_type='image/png')
-
-            return http_response
-        except Exception as io_exception:
-            logger.debug(io_exception)
-            return HttpResponseBadRequest()
-
 
 class TokenViewSet(viewsets.ModelViewSet):
     """ List the tokens of the project """

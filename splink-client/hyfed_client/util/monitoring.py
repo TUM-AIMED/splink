@@ -73,7 +73,6 @@ class Timer:
 
         self.in_progress = False
 
-
     def new_round(self):
         """ Update total statistics in the new round """
 

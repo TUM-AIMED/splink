@@ -41,7 +41,7 @@ class HyFedClientProject:
     """ A base class providing basic functions of client package for communication with the server or compensator """
 
     def __init__(self, username, project_id, token, server_url, compensator_url,
-                 name, description, algorithm, coordinator, result_dir, log_dir):
+                 name, description, tool, algorithm, coordinator, result_dir, log_dir):
 
         # authentication parameters
         self.username = username
@@ -55,6 +55,7 @@ class HyFedClientProject:
         # project parameters
         self.name = name
         self.description = description
+        self.tool = tool
         self.algorithm = algorithm
         self.coordinator = coordinator
 
@@ -74,15 +75,24 @@ class HyFedClientProject:
         self.local_parameters = dict()
         self.global_parameters = dict()
         self.compensation_parameters = dict()  # a dictionary with the same keys as the self.local parameters but with noise values
+        self.data_type_parameters = dict()   # a dictionary with the same keys as the self.local parameters but with data_type vlaues
 
         # a flag configurable in each project step, to hide the local parameters of the step from the server
         self.compensator_flag = False
+
+        # dtype of parameter, will set by the developer using set_compensator_flag(data_type)
+        self.parameter_data_type = dict()
 
         # a flag which indicates whether the compensator ever used in the project.
         # if so, a dummy parameter will be sent to compensator in the Result step to enforce the compensator to share
         # its monitoring parameters from the previous step with the server. This way, the compensator time will not be ignored for
         # the last step it was used
         self.compensator_ever_used = False
+
+        # standard deviation of the Gaussian distribution to generate noise
+        # for negative integers and floating-point values
+        # the value of this parameter can be changed by the corresponding setter function
+        self.gaussian_std = 1e6
 
         # monitoring timers; they are reset in receive_parameters_from_server in communication round 1
         self.computation_timer = Timer(name='Computation')
@@ -406,6 +416,7 @@ class HyFedClientProject:
         self.set_operation_status_in_progress()
         self.local_parameters = dict()
         self.compensation_parameters = dict()
+        self.data_type_parameters = dict()
         self.unset_compensator_flag()
         self.log(f"######### Communication round # {self.comm_round }")
         self.log(f"### Step: {self.project_step}")
@@ -606,7 +617,7 @@ class HyFedClientProject:
         # to enforce the compensator to send its monitoring parameters to the server
         # so that its computation and network time from the last step it was used is considered
         if self.compensator_ever_used and self.project_step == HyFedProjectStep.RESULT:
-            self.set_compensator_flag()
+            self.set_compensator_flag({})
 
         if self.compensator_flag:
             # add noise to the local model parameters
@@ -628,12 +639,14 @@ class HyFedClientProject:
             self.send_parameters_to_server()
 
     # ####### Compensator related functions
-    def set_compensator_flag(self):
+    def set_compensator_flag(self, data_type):
         self.compensator_flag = True
         self.compensator_ever_used = True
+        self.parameter_data_type = data_type
 
     def unset_compensator_flag(self):
         self.compensator_flag = False
+        self.parameter_data_type = dict()
 
     def is_compensator_flag_set(self):
         return self.compensator_flag
@@ -654,7 +667,9 @@ class HyFedClientProject:
                 local_parameter_values = self.local_parameters[local_parameter_name]
 
                 # make the local model parameters noisy
-                noisy_local_parameter_values, noise_values = make_noisy(local_parameter_values)
+                noisy_local_parameter_values, noise_values = make_noisy(local_parameter_values,
+                                                                        self.parameter_data_type[local_parameter_name],
+                                                                        self.gaussian_std)
 
                 # if error occurred in making the parameter value noisy, fail project
                 if noisy_local_parameter_values is None or noise_values is None:
@@ -673,7 +688,11 @@ class HyFedClientProject:
                 # add noise values to the compensation parameters
                 self.compensation_parameters[local_parameter_name] = noise_values
 
+                # add data type info of the local parameter into data_type parmaeters
+                self.data_type_parameters[local_parameter_name] = self.parameter_data_type[local_parameter_name]
+
             self.computation_timer.stop()
+
         except Exception as noise_exp:
             self.log("Failed!")
             self.log(f'\t{noise_exp}\n')
@@ -769,7 +788,8 @@ class HyFedClientProject:
             parameters_json = {Parameter.AUTHENTICATION: authentication_parameters,
                                Parameter.SYNCHRONIZATION: sync_parameters,
                                Parameter.CONNECTION: connection_parameters,
-                               Parameter.COMPENSATION: self.compensation_parameters
+                               Parameter.COMPENSATION: self.compensation_parameters,
+                               Parameter.DATA_TYPE: self.data_type_parameters
                                }
             parameters_serialized = pickle.dumps(parameters_json)
 
@@ -804,9 +824,10 @@ class HyFedClientProject:
         self.log(f'Coordinator: {self.coordinator}', include_date=False)
         self.log(f'Project ID: {self.project_id}', include_date=False)
         self.log(f'Token: {self.token}', include_date=False)
+        self.log(f'Tool: {self.tool}', include_date=False)
+        self.log(f'Algorithm: {self.algorithm}', include_date=False)
         self.log(f'Project name: {self.name}', include_date=False)
         self.log(f'Project description: {self.description}', include_date=False)
-        self.log(f'Algorithm: {self.algorithm}', include_date=False)
 
         self.log("\n", include_date=False)
 
@@ -819,16 +840,21 @@ class HyFedClientProject:
         self.log(f"Network receive time: {self.network_receive_timer.get_total_duration()}", include_date=False)
         self.log(f"Idle time: {self.idle_timer.get_total_duration()}", include_date=False)
 
-    def save_log(self):
+    def save_log(self, file_path=None):
         """ Save log file """
 
         try:
-            # create log directory
-            Path(self.log_dir).mkdir(parents=True, exist_ok=True)
-            os.chmod(self.log_dir, 0o700)
+            if file_path is None:
+                # create log directory
+                Path(self.log_dir).mkdir(parents=True, exist_ok=True)
+                os.chmod(self.log_dir, 0o700)
+
+                # create log file path
+                log_file_path = f"{self.log_dir}/{self.project_id}.log"
+            else:
+                log_file_path = f"{file_path}"
 
             # open log file
-            log_file_path = f"{self.log_dir}/{self.project_id}.log"
             log_file = open(log_file_path, 'w')
 
             # write log messages to the log file
@@ -840,6 +866,13 @@ class HyFedClientProject:
         except Exception as io_exception:
             self.log(io_exception)
             self.set_operation_status_failed()
+
+    # ####### setter functions
+    def set_gaussian_std(self, gaussian_std):
+        if gaussian_std < 1000:
+            self.gaussian_std = 1000
+        else:
+            self.gaussian_std = gaussian_std
 
     # ####### getter functions
     def get_name(self):
