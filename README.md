@@ -11,18 +11,23 @@ To see how to run **sPLINK**, please see [sPLINK online](https://exbio.wzw.tum.d
 ## License
 The **sPLINK** source code is licensed under the Apache License Version 2.0. (C) 2021, the **sPLINK** developers.
 
+## Paper
+The sPLINK paper was published at Genome Biology: https://doi.org/10.1186/s13059-021-02562-1.
+
 ## Citation
 If you use **sPLINK** in your study, please cite **sPLINK** and **HyFed** as follows: <br />
    ```
-@article{splink2020,
-    title={sPLINK: A Federated, Privacy-Preserving Tool as a Robust Alternative to Meta-Analysis in Genome-Wide Association Studies},
-    author={Nasirigerdeh, Reza and Torkzadehmahani, Reihaneh and Matschinske, Julian and Frisch, Tobias and List, Markus and Späth, Julian and Weiss, Stefan and Völker, Uwe and Heider, Dominik and Wenke, Nina Kerstin and Kacprowski, Tim and Baumbach, Jan},
-    year={2020},
-    elocation-id = {2020.06.05.136382},
-    doi = {10.1101/2020.06.05.136382},
-    publisher = {Cold Spring Harbor Laboratory},
-    journal = {bioRxiv}
+@article{nasirigerdeh2022splink,
+  title={sPLINK: a hybrid federated tool as a robust alternative to meta-analysis in genome-wide association studies},
+  author={Nasirigerdeh, Reza and Torkzadehmahani, Reihaneh and Matschinske, Julian and Frisch, Tobias and List, Markus and Sp{\"a}th, Julian and Weiss, Stefan and V{\"o}lker, Uwe and Pitk{\"a}nen, Esa and Heider, Dominik and others},
+  journal={Genome Biology},
+  volume={23},
+  number={1},
+  pages={1--24},
+  year={2022},
+  publisher={BioMed Central}
 }
+
 
 @misc{nasirigerdeh2021hyfed,
        title={HyFed: A Hybrid Federated Framework for Privacy-preserving Machine Learning},
