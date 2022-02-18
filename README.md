@@ -1,6 +1,6 @@
 # sPLINK 
 
-## __A Federated, Privacy-preserving Tool for Genome-wide Association Studies__
+## __A Federated, Privacy-aware Tool for Genome-wide Association Studies__
 
 ## About
 **sPLINK** is a tool set for federated, privacy-preserving genome-wide association studies (GWAS). **sPLINK** is based on the [HyFed framework](https://github.com/tum-aimed/hyfed), 
